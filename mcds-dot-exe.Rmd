@@ -1,0 +1,66 @@
+---
+title: "Use of MCDS.exe alternative optimization engine in Distance and mcds packages"
+author: "L Thomas"
+date: "`r format(Sys.Date(), '%d %B %Y')`"
+output: rmarkdown::html_vignette
+bibliography: mcds-dot-exe.bib
+csl: apa.csl
+---
+
+```{r include=FALSE}
+knitr::opts_chunk$set(eval=TRUE, message=FALSE, warnings=FALSE)
+```
+
+Here we demonstrate the use of the alternative optimization `mcds.exe` in the `Distance` and `mrds` packages.
+
+This vignette requires the packages `Distance` version 1.0.8 or later and `mrds 2.3.0` or later.  It is designed for use in the Microsoft Windows operating system -- the `mcds.exe` engine is not currently supported in MacOS or Linux.
+
+# Objectives
+
+- Download the mcds.exe optimization engine
+- Demonstrate its use in a simple line transect example via the `Distance` package
+- Demonstrate the same example via the `mrds` package
+- Demonstrate its use in a more complex camera trap example via the `Distance package
+
+# Introduction
+
+The `Distance` package is designed to provide a simple way to fit detection functions and estimate abundance using conventional distance sampling methodology (i.e., single observer distance sampling, possibly with covariates, as described by [@buckland2015distance]). The main function is `ds`.  Underlying `Distance` is the package `mrds`: when the function `ds` is called it does some pre-processing and then calls the function `ddf` in the `mrds` package to do the work of detection function fitting.  `mrds` uses maximum likelihood to fit the specified detection function model to the distance data using a built-in algorithm written in `R`.  
+
+An alternative method for analyzing distance sampling data is using the Distance for Windows software [@Thomas2010]. This software also uses maximum liklihood to fit the detection function models, and relies on software written in the programming language FORTRAN to do the fitting.  The filename of this software is `MCDS.exe`.
+
+In a perfect world, both methods would produce identical results given the same data and model specification, since the likelihood has only one maximum.  However, the likelihood surface is sometimes complex, especially when monotonicity constraints are used (which ensure the estimated detection probability is flat or decreasing with increasing distance) or with ``overdispersed'' or ``spiked'' data (see Figure 2 in [@Thomas2010]), and so in some (rare) cases one or other piece of software fails to find the maximum.  To counteract this, it is possible to run both the `R`-based optimizer and `MCDS.exe` from the `ds` function within the `Distance` package or the `ddf` function within `mrds` package.
+
+Another motivation for using the `MCDS.exe` software from within `R` is that the `R`-based optimizer is sometimes slow to converge and so using `MCDS.exe` in place of the `R`-based optimizer can save significant time, particularly when doing a nonparametric bootstrap for large datasets.
+
+This vignette demonstrates how to download and then use the MCDS.exe sofware from within the `Distance` and `mrds` packages.  For more information, see the `MCDS.exe` help page within the `mrds` package.
+
+# Downloading and verifying MCDS.exe
+
+The program `MCDS.exe` does not come automatically with the `Distance` or `mrds` packages, to avoid violating CRAN rules, so you must first download it from the distance sampling website.  You can check whether `MCDS.exe` is installed already or not by loading the `Distance` library:
+```{r}
+library(Distance)
+```
+If `MCDS.exe` is not installed, then you will receive the message
+`MCDS.exe not detected, single observer analyses will only be run using optimiser in mrds R library. See ?MCDS for details.`
+
+In this case, you need to download it from the Distancesampling.org web site:
+
+```{r}
+download.file("http://distancesampling.org/R/MCDS.exe", paste0(system.file(package="mrds"),"/MCDS.exe"), mode = "wb")
+```
+
+Now if you reload the Distance package, the `MCDS.exe not detected` message should not be shown:
+
+```{r}
+detach("package:Distance", unload = TRUE)
+library(Distance)
+```
+
+Now that this software is available, both it and the `R` optimizer will be used by default for each analysis; you can also choose to use just one or the other, as shown below.
+
+# Analysis using R-based optimizer and MCDS.exe
+
+
+
+# References
+
