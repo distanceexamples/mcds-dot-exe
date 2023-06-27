@@ -437,22 +437,150 @@ sampling website. You can check whether <code>MCDS.exe</code> is
 installed already or not by loading the <code>Distance</code>
 library:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(Distance)</span></code></pre></div>
+<pre><code>## Loading required package: mrds</code></pre>
+<pre><code>## This is mrds 2.2.8.9006
+## Built: R 4.2.3; ; 2023-06-26 21:44:57 UTC; windows
+## MCDS.exe detected, by default single observer analyses will utilise both the mrds R optimiser and the MCDS.exe fortran optimiser to achieve the best fit. See ?ddf and ?MCDS for details.</code></pre>
+<pre><code>## 
+## Attaching package: &#39;Distance&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:mrds&#39;:
+## 
+##     create.bins</code></pre>
 <p>If <code>MCDS.exe</code> is not installed, then you will receive the
 message
 <code>MCDS.exe not detected, single observer analyses will only be run using optimiser in mrds R library. See ?MCDS for details.</code></p>
 <p>In this case, you need to download it from the Distancesampling.org
 web site:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">download.file</span>(<span class="st">&quot;http://distancesampling.org/R/MCDS.exe&quot;</span>, <span class="fu">paste0</span>(<span class="fu">system.file</span>(<span class="at">package=</span><span class="st">&quot;mrds&quot;</span>),<span class="st">&quot;/MCDS.exe&quot;</span>), <span class="at">mode =</span> <span class="st">&quot;wb&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co">#download.file(&quot;http://distancesampling.org/R/MCDS.exe&quot;, paste0(system.file(package=&quot;mrds&quot;),&quot;/MCDS.exe&quot;), mode = &quot;wb&quot;)</span></span></code></pre></div>
 <p>Now if you reload the Distance package, the
 <code>MCDS.exe not detected</code> message should not be shown:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">detach</span>(<span class="st">&quot;package:Distance&quot;</span>, <span class="at">unload =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">library</span>(Distance)</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">detach</span>(<span class="st">&quot;package:Distance&quot;</span>, <span class="at">unload =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="fu">library</span>(Distance)</span></code></pre></div>
+<pre><code>## 
+## Attaching package: &#39;Distance&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:mrds&#39;:
+## 
+##     create.bins</code></pre>
 <p>Now that this software is available, both it and the <code>R</code>
 optimizer will be used by default for each analysis; you can also choose
 to use just one or the other, as shown below.</p>
 </div>
-<div id="analysis-using-r-based-optimizer-and-mcds.exe" class="section level1">
-<h1>Analysis using R-based optimizer and MCDS.exe</h1>
+<div id="analysis-using-r-based-optimizer-and-mcds.exe---golf-tee-data" class="section level1">
+<h1>Analysis using R-based optimizer and MCDS.exe - Golf Tee data</h1>
+<p>This example (of golf tee data, using only observer 1) is taken from
+the <code>R</code> help for the <code>ds</code> function:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">data</span>(book.tee.data)</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>tee.data <span class="ot">&lt;-</span> <span class="fu">subset</span>(book.tee.data<span class="sc">$</span>book.tee.dataframe, observer<span class="sc">==</span><span class="dv">1</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>ds.model <span class="ot">&lt;-</span> <span class="fu">ds</span>(tee.data, <span class="at">truncation =</span> <span class="dv">4</span>)</span></code></pre></div>
+<pre><code>## Starting AIC adjustment term selection.</code></pre>
+<pre><code>## Fitting half-normal key function</code></pre>
+<pre><code>## ** Warning: One or more cluster sizes are coded as -1. Distance assumes -1 to mean a cluster of undetermined size. These observations are used for estimating detection probability and encounter rate, but not cluster size. **</code></pre>
+<pre><code>## AIC= 311.138</code></pre>
+<pre><code>## Fitting half-normal key function with cosine(2) adjustments</code></pre>
+<pre><code>## ** Warning: One or more cluster sizes are coded as -1. Distance assumes -1 to mean a cluster of undetermined size. These observations are used for estimating detection probability and encounter rate, but not cluster size. **</code></pre>
+<pre><code>## AIC= 313.124</code></pre>
+<pre><code>## 
+## Half-normal key function selected.</code></pre>
+<pre><code>## No survey area information supplied, only estimating detection function.</code></pre>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="fu">summary</span>(ds.model)</span></code></pre></div>
+<pre><code>## 
+## Summary for distance analysis 
+## Number of observations :  124 
+## Distance range         :  0  -  4 
+## 
+## Model       : Half-normal key function 
+## AIC         :  311.1385 
+## Optimisation:  mrds (nlminb) 
+## 
+## Detection function parameters
+## Scale coefficient(s):  
+##              estimate         se
+## (Intercept) 0.6632435 0.09981249
+## 
+##                        Estimate          SE         CV
+## Average p             0.5842744  0.04637627 0.07937412
+## N in covered region 212.2290462 20.85130344 0.09824906</code></pre>
+<p>Assuming you have <code>MCDS.exe</code> installed, the default is
+that both it and the <code>R</code>-based optimizer are run. Both give
+the same result in this example, and when this happens the result from
+the <code>R</code>-based optimizer is used. You can see this from the
+line of summary output:</p>
+<p><code>Optimisation:  mrds (nlminb)</code></p>
+<p>where <code>mrds</code> is the <code>R</code> package that the
+<code>Distance</code> package relies on, and <code>nlminb</code> is the
+<code>R</code>-based optimizer.</p>
+<p>You can see both optimizers in action by setting the
+<code>debug_level</code> argument of the <code>ds</code> function:</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a>ds.model <span class="ot">&lt;-</span> <span class="fu">ds</span>(tee.data, <span class="at">truncation =</span> <span class="dv">4</span>, <span class="at">debug_level =</span> <span class="dv">1</span>)</span></code></pre></div>
+<pre><code>## Starting AIC adjustment term selection.</code></pre>
+<pre><code>## Fitting half-normal key function</code></pre>
+<pre><code>## DEBUG: initial values = -0.1031529</code></pre>
+<pre><code>## Running MCDS.exe...</code></pre>
+<pre><code>## Command file written to C:\Users\lt5\AppData\Local\Temp\RtmpaAx2xR\cmdtmp17c872004ef.txt</code></pre>
+<pre><code>## Stats file written to C:\Users\lt5\AppData\Local\Temp\RtmpaAx2xR\stat17c846b34649.txt</code></pre>
+<pre><code>## ** Warning: One or more cluster sizes are coded as -1. Distance assumes -1 to mean a cluster of undetermined size. These observations are used for estimating detection probability and encounter rate, but not cluster size. **</code></pre>
+<pre><code>## DEBUG: initial values = 0.6632378 
+## 
+## DEBUG: Convergence! 
+##        Iteration  0.0 
+##        Converge   = 0 
+##        nll        = 154.5692 
+##        parameters = 0.6632378</code></pre>
+<pre><code>## MCDS.exe log likehood: -154.5697</code></pre>
+<pre><code>## MCDS.exe pars: 1.941067</code></pre>
+<pre><code>## mrds refitted log likehood: -154.5692276</code></pre>
+<pre><code>## mrds refitted pars: 0.6632378</code></pre>
+<pre><code>## 
+## DEBUG: Convergence! 
+##        Iteration  0.0 
+##        Converge   = 0 
+##        nll        = 154.5692 
+##        parameters = 0.6632435</code></pre>
+<pre><code>## AIC= 311.138</code></pre>
+<pre><code>## Fitting half-normal key function with cosine(2) adjustments</code></pre>
+<pre><code>## DEBUG: initial values = -0.1031529 0</code></pre>
+<pre><code>## Running MCDS.exe...</code></pre>
+<pre><code>## Command file written to C:\Users\lt5\AppData\Local\Temp\RtmpaAx2xR\cmdtmp17c816c0106d.txt</code></pre>
+<pre><code>## Stats file written to C:\Users\lt5\AppData\Local\Temp\RtmpaAx2xR\stat17c872115c1.txt</code></pre>
+<pre><code>## ** Warning: One or more cluster sizes are coded as -1. Distance assumes -1 to mean a cluster of undetermined size. These observations are used for estimating detection probability and encounter rate, but not cluster size. **</code></pre>
+<pre><code>## DEBUG: initial values = 0.6606793 -0.0159333 
+## 
+## DEBUG: Convergence! 
+##        Iteration  0.0 
+##        Converge   = 0 
+##        nll        = 154.5619 
+##        parameters = 0.6606793, -0.0159333</code></pre>
+<pre><code>## MCDS.exe log likehood: -154.5624</code></pre>
+<pre><code>## MCDS.exe pars: 1.936107, -0.0159333</code></pre>
+<pre><code>## mrds refitted log likehood: -154.5619307</code></pre>
+<pre><code>## mrds refitted pars: 0.6606793, -0.0159333</code></pre>
+<pre><code>## 
+## Iter: 1 fn: 154.5619  Pars:   0.66068 -0.01591
+## Iter: 2 fn: 154.5619  Pars:   0.66069 -0.01592
+## solnp--&gt; Completed in 2 iterations
+## 
+## DEBUG: Convergence! 
+##        Iteration  0.0 
+##        Converge   = 0 
+##        nll        = 154.5619 
+##        parameters = 0.6606853, -0.0159233</code></pre>
+<pre><code>## AIC= 313.124</code></pre>
+<pre><code>## 
+## Half-normal key function selected.</code></pre>
+<pre><code>## No survey area information supplied, only estimating detection function.</code></pre>
+<p>First the half-normal with 0 adjustments is run, and for this model
+the <code>MCDS.exe</code> sofware is run first, followed by the
+<code>R</code>-based (<code>mrds</code>) optimizer. Both converge and
+both give the same <code>nll</code> (negative log-likelihood) or
+154.5692, giving an AIC of 311.138. The model with half-normal and a
+cosine adjustment of order 2 is then fitted to the data, with first the
+<code>MCDS.exe</code> optimizer and then the <code>R</code>-based
+optimizer. Again both give the same result of nll 154.5619 and an AIC of
+313.124. This is higher than the AIC with no adjustments so half-normal
+with no adjustments is chosen.</p>
+<p>In this case, both optimizers produced the same result, so there is
+no benefit to run <code>MCDS.exe</code>. Our tests have shown that in
+general</p>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="unnumbered">References</h1>

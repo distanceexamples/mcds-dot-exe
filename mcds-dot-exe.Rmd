@@ -8,7 +8,7 @@ csl: apa.csl
 ---
 
 ```{r include=FALSE}
-knitr::opts_chunk$set(eval=TRUE, message=FALSE, warnings=FALSE)
+knitr::opts_chunk$set(eval=TRUE, message=TRUE, warnings=FALSE)
 ```
 
 Here we demonstrate the use of the alternative optimization `mcds.exe` in the `Distance` and `mrds` packages.
@@ -46,7 +46,7 @@ If `MCDS.exe` is not installed, then you will receive the message
 In this case, you need to download it from the Distancesampling.org web site:
 
 ```{r}
-download.file("http://distancesampling.org/R/MCDS.exe", paste0(system.file(package="mrds"),"/MCDS.exe"), mode = "wb")
+#download.file("http://distancesampling.org/R/MCDS.exe", paste0(system.file(package="mrds"),"/MCDS.exe"), mode = "wb")
 ```
 
 Now if you reload the Distance package, the `MCDS.exe not detected` message should not be shown:
@@ -58,8 +58,100 @@ library(Distance)
 
 Now that this software is available, both it and the `R` optimizer will be used by default for each analysis; you can also choose to use just one or the other, as shown below.
 
-# Analysis using R-based optimizer and MCDS.exe
+# Example with Golf Tee data
 
+## Both MCDS.exe and the R-based optimizer
+
+This example (of golf tee data, using only observer 1) is taken from the `R` help for the `ds` function:
+
+```{r}
+data(book.tee.data)
+tee.data <- subset(book.tee.data$book.tee.dataframe, observer==1)
+ds.model <- ds(tee.data, truncation = 4)
+summary(ds.model)
+```
+
+Assuming you have `MCDS.exe` installed, the default is that both it and the `R`-based optimizer are run.  Both give the same result in this example, and when this happens the result from the `R`-based optimizer is used.  You can see this from the line of summary output:
+
+`Optimisation:  mrds (nlminb)`
+
+where `mrds` is the `R` package that the `Distance` package relies on, and `nlminb` is the `R`-based optimizer.  
+
+You can see both optimizers in action by setting the `debug_level` argument of the `ds` function to a value larger than the default of 0:
+
+```{r}
+ds.model <- ds(tee.data, truncation = 4, debug_level = 1)
+```
+
+First the half-normal with 0 adjustments is run, and for this model the `MCDS.exe` sofware is run first, followed by the `R`-based (`mrds`) optimizer.  Both converge and both give the same `nll` (negative log-likelihood) or 154.5692, giving an AIC of 311.138.  The model with half-normal and a cosine adjustment of order 2 is then fitted to the data, with first the `MCDS.exe` optimizer and then the `R`-based optimizer.  Again  both give the same result of nll 154.5619 and an AIC of 313.124.  This is higher than the AIC with no adjustments so half-normal with no adjustments is chosen.
+
+In this case, both optimizers produced the same result, so there is no benefit to run `MCDS.exe`.
+
+## Specifying which optimzier to run
+
+As we said earlier, the default behaviour when `MCDS.exe` has been downloaded is to run both `MCDS.exe` and the `R`-based optimizer.  However, the `optimizer` argument can be used to specify which to use -- either ``both'', ``R`` or ``MCDS``.  Here is an example with just the `MCDS.exe` optimizer:
+
+```{r}
+ds.model <- ds(tee.data, truncation = 4, optimizer = "MCDS")
+```
+
+# Point transect example - wren data
+
+This is an example of point transect data for a bird (wren), from [@Buckland2006].
+
+```{r, warning=TRUE}
+data("wren_5min")
+conversion.factor <- convert_units("meter", NULL, "hectare")
+bin.cutpoints.100m <- bin.cutpoints <- c(0, 10, 20, 30, 40, 60, 80, 100)
+```
+
+The following call to `ds` gives some warnings about detection function being less than 0 in some places
+```{r, warning = TRUE}
+wren5min.hn.herm.t100 <- ds(data=wren_5min, key="hn", adjustment="herm", 
+                            transect="point", cutpoints=bin.cutpoints.100m,
+                            convert_units=conversion.factor)
+summary(wren5min.hn.herm.t100)
+```
+
+The `MCDS.exe` iotimizer is the chosen one (see the `Optimisation' line of output).
+
+The warnings persist if only the `MCDS.exe` optimizer is used:
+
+```{r, warning = TRUE}
+wren5min.hn.herm.t100.mcds <- ds(data=wren_5min, key="hn", adjustment="herm", 
+                            transect="point", cutpoints=bin.cutpoints.100m,
+                            convert_units=conversion.factor,
+                            optimizer = "MCDS")
+```
+
+Looking at a plot of the fitted object, it seems that the evaluated pdf is less than 0 at distances close to the truncation point:
+
+```{r}
+plot(wren5min.hn.herm.t100.mcds, pdf = TRUE)
+```
+
+
+
+#warning present in mcds.exe fit
+wren5min.hn.herm.t100.mcds <- ds(data=wren_5min, key="hn", adjustment="herm", 
+                            transect="point", cutpoints=bin.cutpoints.100m,
+                            convert_units=conversion.factor,
+                            skip_R = TRUE)
+#warning absent in R optimizer fit
+wren5min.hn.herm.t100.r <- ds(data=wren_5min, key="hn", adjustment="herm", 
+                                 transect="point", cutpoints=bin.cutpoints.100m,
+                                 convert_units=conversion.factor,
+                                 skip_mcds = TRUE)
+#both select the same model (adj(4)) but have different parameter estiataes
+summary(wren5min.hn.herm.t100.mcds)
+summary(wren5min.hn.herm.t100.r)
+#lnl higher for mcds.exe fit
+wren5min.hn.herm.t100.mcds$ddf$lnl #-209.1142
+wren5min.hn.herm.t100.r$ddf$lnl #-209.3717
+#.... but plotting clearly shows fitted pdf is negative around 100m
+plot(wren5min.hn.herm.t100.mcds, pdf = TRUE)
+plot(wren5min.hn.herm.t100.r, pdf = TRUE)
+```
 
 
 # References
