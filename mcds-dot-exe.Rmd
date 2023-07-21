@@ -2,7 +2,10 @@
 title: "Use of MCDS.exe alternative optimization engine in Distance and mcds packages"
 author: "L Thomas"
 date: "`r format(Sys.Date(), '%d %B %Y')`"
-output: rmarkdown::html_vignette
+output: 
+  distill::distill_article:
+    toc: true
+    toc_depth: 2
 bibliography: mcds-dot-exe.bib
 csl: apa.csl
 ---
@@ -242,7 +245,9 @@ Some situations where the two may produce different results are given below.
 
 If you are interested in seeing more comparisons of the optimizers on various datasets, we maintain a test suite of both straightforward and challenging datasets together with test code to run and compare the two optimizers -- this is available at the [MCDS_mrds_compare repository](https://github.com/DistanceDevelopment/MCDS_mrds_compare).
 
-One other situation to favour one optimizer over the other is speed, and we have found that for large datasets the `MCDS.exe` optimizer is quicker.
+If you encounter difficulties when using both optimizers, one possible troubleshooting step is to run the analysis first choosing one optimizer (e.g., specifing the argument `optimizer = "MCDS"`) and then choosing the other (`optimizer = "R"`).  This allows you clearly to see what the output of each optimizer is (including any error messages) and facilitates their comparison.
+
+One other criterion to favour one optimizer over the other is speed, and we have found that for large datasets the `MCDS.exe` optimizer is quicker.
 
 One thing to note is that the `MCDS.exe` file will get deleted each time you update the `mrds` package, so you'll need to re-download the file if you want to continue using the `MCDS.exe` optimizer.  As shown above, this only requires running one line of code.
 
