@@ -1,7 +1,13 @@
 ---
-title: "Use of MCDS.exe alternative optimization engine in Distance and mcds packages"
-author: "L Thomas"
-date: "`r format(Sys.Date(), '%d %B %Y')`"
+title: "Alternative optimization engine for fitting detection functions"
+description: |
+  Examples demonstrating the use of the mcds.exe alternative optimization engine for fitting single platform detection functions in the Distance and mrds packages.
+author: 
+  - name: Len Thomas
+    url: http://distancesampling.org
+    affiliation: CREEM, Univ of St Andrews
+    affiliation_url: https://creem.st-andrews.ac.uk
+date: "`r Sys.Date()`"
 output: 
   distill::distill_article:
     toc: true
@@ -16,7 +22,7 @@ knitr::opts_chunk$set(eval=TRUE, message=TRUE, warnings=FALSE, cache = TRUE)
 
 Here we demonstrate the use of the alternative optimization engine `mcds.exe` in the `Distance` and `mrds` packages.
 
-This vignette requires the packages `Distance` version 1.0.8 or later and `mrds 2.3.0` or later.  It is designed for use in the Microsoft Windows operating system -- the `mcds.exe` engine currently only has experimental support for MacOS or Linux.
+This vignette requires the packages `Distance` version 1.0.8 or later and `mrds` version 2.2.9 or later.  It is designed for use in the Microsoft Windows operating system -- the `mcds.exe` engine currently only has experimental support for MacOS or Linux.
 
 # Objectives
 
@@ -252,6 +258,4 @@ One other criterion to favour one optimizer over the other is speed, and we have
 One thing to note is that the `MCDS.exe` file will get deleted each time you update the `mrds` package, so you'll need to re-download the file if you want to continue using the `MCDS.exe` optimizer.  As shown above, this only requires running one line of code.
 
 Going forward, we plan to work on making further improvements to the `R`-based optimizer and it is possible that at some point in the future we are confident this optimizer is uniformly better (in terms of better fit and speed) than the `MCDS.exe` one.  If this happens, we will update this vignette and also make announcements on the distance sampling list.
-
-# References
 
