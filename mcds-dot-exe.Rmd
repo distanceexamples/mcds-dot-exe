@@ -198,7 +198,7 @@ Hence in this case, we would use the `R`-based optimizer's fit.
 
 # Camera trap example
 
-For this example, it helps if you are familiar with the [Analysis of camera trapping data](https://examples.distancesampling.org/Distance-cameratraps/camera-distill.html) vignette on the distanceexamples web site.  This example may get relocated to within the Camera trapping vignette in the future.
+For this example, it helps if you are familiar with the [Analysis of camera trapping data](https://examples.distancesampling.org/Distance-cameratraps/camera-distill.html) vignette on the distanceexamples web site.
 
 We first read in the Duiker data.
 
